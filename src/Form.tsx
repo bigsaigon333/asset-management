@@ -2,6 +2,7 @@ import {
   Button,
   FormControl,
   FormLabel,
+  Grid,
   Input,
   NumberDecrementStepper,
   NumberIncrementStepper,
@@ -11,51 +12,77 @@ import {
 } from "@chakra-ui/react";
 import { FormEventHandler, useState } from "react";
 import type { Asset } from "./App";
+import { formatDate } from "./utils";
 
 interface FormProps {
   onSubmit: (asset: Asset) => void;
 }
 
 const Form = ({ onSubmit }: FormProps): JSX.Element => {
-  const [asset, setAsset] = useState<Asset>({ name: "", amount: 0 });
+  const [value, setValue] = useState<Asset>({
+    name: "",
+    amount: 0,
+    purchaseDate: new Date(Date.now()),
+  });
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    onSubmit(asset);
+    onSubmit(value);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormControl>
-        <FormLabel htmlFor="name">자산명</FormLabel>
-        <Input
-          id="name"
-          type="text"
-          value={asset.name}
-          onChange={(event) =>
-            setAsset((prev) => ({ ...prev, name: event.target.value }))
-          }
-        />
-      </FormControl>
-      <FormControl>
-        <FormLabel htmlFor="amount">투자금액</FormLabel>
-        <NumberInput
-          id="amount"
-          value={asset.amount || ""}
-          onChange={(valueString) =>
-            setAsset({ ...asset, amount: Number(valueString) })
-          }
+      <Grid rowGap={4}>
+        <FormControl>
+          <FormLabel htmlFor="name">자산명</FormLabel>
+          <Input
+            id="name"
+            type="text"
+            value={value.name}
+            onChange={(event) =>
+              setValue((prev) => ({ ...prev, name: event.target.value }))
+            }
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="purchaseDate">매입일시</FormLabel>
+          <Input
+            id="purchaseDate"
+            type="date"
+            value={formatDate(value.purchaseDate)}
+            onChange={(event) => {
+              setValue((prev) => ({
+                ...prev,
+                purchaseDate: new Date(event.target.value),
+              }));
+            }}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel htmlFor="amount">투자금액</FormLabel>
+          <NumberInput
+            id="amount"
+            value={value.amount || ""}
+            onChange={(valueString) =>
+              setValue({ ...value, amount: Number(valueString) })
+            }
+          >
+            <NumberInputField />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </FormControl>
+        <Button
+          type="submit"
+          colorScheme="yellow"
+          variant="outline"
+          width="full"
         >
-          <NumberInputField />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </FormControl>
-      <Button type="submit" colorScheme="yellow" variant="outline">
-        추가
-      </Button>
+          추가
+        </Button>
+      </Grid>
     </form>
   );
 };
