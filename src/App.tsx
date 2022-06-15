@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./App.css";
 import Form from "./Form";
 
 export interface Asset {
@@ -18,7 +17,7 @@ const App = (): JSX.Element => {
     <div>
       <Form onSubmit={addAsset} />
       {assets.map(({ name, amount }) => (
-        <p>
+        <p key={name}>
           <span>{name}</span>
           <span>{amount}</span>
         </p>

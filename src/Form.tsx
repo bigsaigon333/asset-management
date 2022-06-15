@@ -1,4 +1,15 @@
-import { ChangeEventHandler, FormEventHandler, useState } from "react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+} from "@chakra-ui/react";
+import { FormEventHandler, useState } from "react";
 import type { Asset } from "./App";
 
 interface FormProps {
@@ -7,15 +18,6 @@ interface FormProps {
 
 const Form = ({ onSubmit }: FormProps): JSX.Element => {
   const [asset, setAsset] = useState<Asset>({ name: "", amount: 0 });
-  const onChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setAsset((prev) => ({
-      ...prev,
-      [event.target.id]:
-        event.target.id === "amount"
-          ? event.target.valueAsNumber || 0
-          : event.target.value,
-    }));
-  };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
@@ -24,20 +26,36 @@ const Form = ({ onSubmit }: FormProps): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">자산명</label>
-        <input id="name" type="text" value={asset.name} onChange={onChange} />
-      </div>
-      <div>
-        <label htmlFor="amount">투자금액</label>
-        <input
-          id="amount"
-          type="number"
-          value={asset.amount || ""}
-          onChange={onChange}
+      <FormControl>
+        <FormLabel htmlFor="name">자산명</FormLabel>
+        <Input
+          id="name"
+          type="text"
+          value={asset.name}
+          onChange={(event) =>
+            setAsset((prev) => ({ ...prev, name: event.target.value }))
+          }
         />
-      </div>
-      <button type="submit">추가</button>
+      </FormControl>
+      <FormControl>
+        <FormLabel htmlFor="amount">투자금액</FormLabel>
+        <NumberInput
+          id="amount"
+          value={asset.amount || ""}
+          onChange={(valueString) =>
+            setAsset({ ...asset, amount: Number(valueString) })
+          }
+        >
+          <NumberInputField />
+          <NumberInputStepper>
+            <NumberIncrementStepper />
+            <NumberDecrementStepper />
+          </NumberInputStepper>
+        </NumberInput>
+      </FormControl>
+      <Button type="submit" colorScheme="yellow" variant="outline">
+        추가
+      </Button>
     </form>
   );
 };
