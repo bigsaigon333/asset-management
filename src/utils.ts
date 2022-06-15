@@ -9,3 +9,5 @@ export const formatDate = (date: Date): string => {
 export const formatRate = (rate: number): string => {
   return `${(rate * 100).toFixed(2)}%`;
 };
+
+export const add = (a: number, b: number): number => a + b;
