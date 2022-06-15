@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Form from "./Form";
+import Table from "./Table";
 
 export interface Asset {
   name: string;
@@ -16,12 +17,7 @@ const App = (): JSX.Element => {
   return (
     <div>
       <Form onSubmit={addAsset} />
-      {assets.map(({ name, amount }) => (
-        <p key={name}>
-          <span>{name}</span>
-          <span>{amount}</span>
-        </p>
-      ))}
+      <Table assets={assets} />
     </div>
   );
 };
