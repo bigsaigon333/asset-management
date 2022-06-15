@@ -2,14 +2,13 @@ import {
   Table as UITable,
   TableContainer,
   Tbody,
-  Td,
   Text,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { formatDate } from "./utils";
 import type { Asset } from "./App";
+import AssetTr from "./AssetTr";
 
 interface TableProps {
   assets: Asset[];
@@ -30,15 +29,17 @@ const Table = ({ assets }: TableProps): JSX.Element => {
             <Th>
               <Text align="right">매입금액</Text>
             </Th>
+            <Th>
+              <Text align="right">현재금액</Text>
+            </Th>
+            <Th>
+              <Text align="right">수익률</Text>
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
-          {assets.map(({ name, amount, purchaseDate }) => (
-            <Tr key={name}>
-              <Td>{name}</Td>
-              <Td>{formatDate(purchaseDate)}</Td>
-              <Td isNumeric>{amount}</Td>
-            </Tr>
+          {assets.map((asset) => (
+            <AssetTr key={asset.name} {...asset} />
           ))}
         </Tbody>
       </UITable>

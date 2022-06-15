@@ -5,7 +5,7 @@ import Table from "./Table";
 
 export interface Asset {
   name: string;
-  amount: number;
+  purchaseAmount: number;
   purchaseDate: Date;
 }
 

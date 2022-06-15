@@ -21,7 +21,7 @@ interface FormProps {
 const Form = ({ onSubmit }: FormProps): JSX.Element => {
   const [value, setValue] = useState<Asset>({
     name: "",
-    amount: 0,
+    purchaseAmount: 0,
     purchaseDate: new Date(Date.now()),
   });
 
@@ -59,12 +59,12 @@ const Form = ({ onSubmit }: FormProps): JSX.Element => {
           />
         </FormControl>
         <FormControl>
-          <FormLabel htmlFor="amount">투자금액</FormLabel>
+          <FormLabel htmlFor="purchaseAmount">투자금액</FormLabel>
           <NumberInput
-            id="amount"
-            value={value.amount || ""}
+            id="purchaseAmount"
+            value={value.purchaseAmount || ""}
             onChange={(valueString) =>
-              setValue({ ...value, amount: Number(valueString) })
+              setValue({ ...value, purchaseAmount: Number(valueString) })
             }
           >
             <NumberInputField />
