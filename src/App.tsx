@@ -1,5 +1,6 @@
-import { Divider } from "@chakra-ui/react";
+import { Box, Button, Divider } from "@chakra-ui/react";
 import { useState } from "react";
+import { signIn } from "./firebase";
 import Form from "./Form";
 import { useKey } from "./hooks";
 import Table from "./Table";
@@ -23,6 +24,11 @@ const App = (): JSX.Element => {
 
   return (
     <>
+      <Box display="flex" justifyContent="flex-end">
+        <Button type="button" onClick={signIn}>
+          로그인
+        </Button>
+      </Box>
       <Form key={formKey} onSubmit={addAsset} />
       <Divider margin="8" />
       <Table key={tableKey} assets={assets} />
