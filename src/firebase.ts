@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import {
+  getAuth,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
 import { getDatabase, ref, set } from "firebase/database";
 
 const firebaseConfig = {
@@ -41,4 +46,8 @@ export const signIn = async () => {
     const credential = GoogleAuthProvider.credentialFromError(error);
     // ...
   }
+};
+
+export const signOut = async () => {
+  await firebaseSignOut(auth);
 };

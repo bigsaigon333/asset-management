@@ -12,7 +12,7 @@ export interface Asset {
 }
 
 const App = (): JSX.Element => {
-  const { isSignIn, signIn } = useAuth();
+  const { isSignIn, signIn, signOut } = useAuth();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [formKey, formKeyNext] = useKey();
   const [tableKey, tableKeyNext] = useKey();
@@ -27,7 +27,7 @@ const App = (): JSX.Element => {
     <>
       <Box display="flex" justifyContent="flex-end">
         {isSignIn ? (
-          <Button type="button" width={"5rem"}>
+          <Button type="button" onClick={signOut} width={"5rem"}>
             로그아웃
           </Button>
         ) : (
