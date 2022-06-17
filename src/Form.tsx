@@ -11,8 +11,8 @@ import {
   NumberInputStepper,
 } from "@chakra-ui/react";
 import { FormEventHandler, useState } from "react";
-import type { Asset } from "./App";
 import { formatDate } from "./utils";
+import { Asset } from "./type";
 
 interface FormProps {
   onSubmit: (asset: Asset) => void;

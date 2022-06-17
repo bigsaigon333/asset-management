@@ -5,6 +5,7 @@ import { useKey } from "./hooks";
 import Table from "./Table";
 import { useAuth } from "./context/auth";
 import { Asset } from "./type";
+import { postAsset } from "./firebase";
 
 const App = (): JSX.Element => {
   const { isSignIn, signIn, signOut } = useAuth();
@@ -16,6 +17,8 @@ const App = (): JSX.Element => {
     setAssets((prev) => [...prev, asset]);
     formKeyNext();
     tableKeyNext();
+
+    postAsset(asset);
   };
 
   return (

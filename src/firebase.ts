@@ -5,7 +5,9 @@ import {
   GoogleAuthProvider,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, push } from "firebase/database";
+import { Asset } from "./type";
+import { toJSON } from "./utils";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -50,4 +52,11 @@ export const signIn = async () => {
 
 export const signOut = async () => {
   await firebaseSignOut(auth);
+};
+
+export const postAsset = async (asset: Asset): Promise<void> => {
+  await set(
+    push(ref(db, "assets")),
+    toJSON({ ...asset, uid: auth.currentUser!.uid })
+  );
 };
