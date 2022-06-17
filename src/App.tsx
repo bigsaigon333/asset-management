@@ -1,9 +1,9 @@
 import { Box, Button, Divider } from "@chakra-ui/react";
 import { useState } from "react";
-import { signIn } from "./firebase";
 import Form from "./Form";
 import { useKey } from "./hooks";
 import Table from "./Table";
+import { useAuth } from "./context/auth";
 
 export interface Asset {
   name: string;
@@ -12,6 +12,7 @@ export interface Asset {
 }
 
 const App = (): JSX.Element => {
+  const { isSignIn, signIn } = useAuth();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [formKey, formKeyNext] = useKey();
   const [tableKey, tableKeyNext] = useKey();
@@ -25,9 +26,15 @@ const App = (): JSX.Element => {
   return (
     <>
       <Box display="flex" justifyContent="flex-end">
-        <Button type="button" onClick={signIn}>
-          로그인
-        </Button>
+        {isSignIn ? (
+          <Button type="button" width={"5rem"}>
+            로그아웃
+          </Button>
+        ) : (
+          <Button type="button" onClick={signIn} width={"5rem"}>
+            로그인
+          </Button>
+        )}
       </Box>
       <Form key={formKey} onSubmit={addAsset} />
       <Divider margin="8" />

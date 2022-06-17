@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -15,7 +15,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const database = getDatabase(app);
+const db = getDatabase(app);
 
 const provider = new GoogleAuthProvider();
 
@@ -28,12 +28,8 @@ export const signIn = async () => {
     // This gives you a Google Access Token. You can use it to access the Google API.
     const credential = GoogleAuthProvider.credentialFromResult(result)!;
     const token = credential.accessToken;
-    // The signed-in user info.
-    const user = result.user;
 
-    console.dir(database);
-
-    // ...
+    return result.user;
   } catch (err) {
     const error = err as any;
     // Handle Errors here.
