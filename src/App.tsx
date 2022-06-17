@@ -4,12 +4,7 @@ import Form from "./Form";
 import { useKey } from "./hooks";
 import Table from "./Table";
 import { useAuth } from "./context/auth";
-
-export interface Asset {
-  name: string;
-  purchaseAmount: number;
-  purchaseDate: Date;
-}
+import { Asset } from "./type";
 
 const App = (): JSX.Element => {
   const { isSignIn, signIn, signOut } = useAuth();

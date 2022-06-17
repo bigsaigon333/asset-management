@@ -11,8 +11,8 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import type { Asset } from "./App";
 import { add, formatDate, formatRate } from "./utils";
+import { Asset } from "./type";
 
 interface TableProps {
   assets: Asset[];
