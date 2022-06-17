@@ -1,9 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getDatabase } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  databaseURL: import.meta.env.VITE_DATABASE_URL,
   projectId: import.meta.env.VITE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
@@ -12,6 +14,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
 
 const provider = new GoogleAuthProvider();
 
@@ -26,9 +30,10 @@ export const signIn = async () => {
     const token = credential.accessToken;
     // The signed-in user info.
     const user = result.user;
-    // ...
 
-    console.log(user, token);
+    console.dir(database);
+
+    // ...
   } catch (err) {
     const error = err as any;
     // Handle Errors here.
