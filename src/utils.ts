@@ -32,10 +32,20 @@ export const toJSON = (value: unknown): any => {
   }
 };
 
-export const parse = <T>(value: string): T => {
-  return JSON.parse(value, (key, value) =>
-    typeof value === "string" && !Number.isNaN(Date.parse(value))
-      ? new Date(Date.parse(value))
-      : value
-  );
+export const toDate = (value: unknown): any => {
+  if (value !== null && typeof value === "object") {
+    if (Array.isArray(value)) {
+      return value.map((el) => toDate(el));
+    } else {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, val]) => [key, toDate(val)])
+      );
+    }
+  } else {
+    if (typeof value === "string" && !Number.isNaN(Date.parse(value))) {
+      return new Date(Date.parse(value));
+    } else {
+      return value;
+    }
+  }
 };

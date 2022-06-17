@@ -1,17 +1,34 @@
 import { Box, Button, Divider } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Form from "./Form";
 import { useKey } from "./hooks";
 import Table from "./Table";
 import { useAuth } from "./context/auth";
 import { Asset } from "./type";
-import { postAsset } from "./firebase";
+import { postAsset, readAssets } from "./firebase";
 
 const App = (): JSX.Element => {
   const { isSignIn, signIn, signOut } = useAuth();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [formKey, formKeyNext] = useKey();
   const [tableKey, tableKeyNext] = useKey();
+
+  useEffect(() => {
+    if (isSignIn) {
+      readAssets().then((values) => {
+        if (values == null) {
+          return;
+        }
+
+        setAssets(
+          values.sort(
+            (a, b) => a.purchaseDate.getUTCDate() - b.purchaseDate.getUTCDate()
+          )
+        );
+        tableKeyNext();
+      });
+    }
+  }, [isSignIn]);
 
   const addAsset = (asset: Asset) => {
     setAssets((prev) => [...prev, asset]);

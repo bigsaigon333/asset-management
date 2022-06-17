@@ -5,9 +5,9 @@ import {
   GoogleAuthProvider,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { getDatabase, ref, set, push } from "firebase/database";
+import { getDatabase, ref, set, push, get, child } from "firebase/database";
 import { Asset } from "./type";
-import { toJSON } from "./utils";
+import { toDate, toJSON } from "./utils";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
@@ -56,7 +56,24 @@ export const signOut = async () => {
 
 export const postAsset = async (asset: Asset): Promise<void> => {
   await set(
-    push(ref(db, "assets")),
-    toJSON({ ...asset, uid: auth.currentUser!.uid })
+    push(ref(db, `assets/${auth.currentUser!.uid}`)),
+    toJSON({ ...asset, createdAt: new Date(Date.now()) })
   );
+};
+
+export const readAssets = async (): Promise<Asset[] | null> => {
+  const dbRef = ref(db);
+  try {
+    const snapshot = await get(child(dbRef, `assets/${auth.currentUser!.uid}`));
+
+    if (!snapshot.exists()) {
+      return null;
+    }
+
+    return toDate(Object.values(snapshot.val())) as Asset[];
+  } catch (error) {
+    console.error(error);
+
+    return null;
+  }
 };
