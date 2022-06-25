@@ -1,4 +1,5 @@
 import {
+  IconButton,
   NumberInput,
   NumberInputField,
   Table as UITable,
@@ -48,6 +49,9 @@ const Table = ({ assets }: TableProps): JSX.Element => {
             <Th>
               <Text align="right">수익률</Text>
             </Th>
+            <Th>
+              <Text align="left">비고</Text>
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -89,6 +93,13 @@ const Table = ({ assets }: TableProps): JSX.Element => {
                     {formatRate(
                       (currentAmount - purchaseAmount) / purchaseAmount
                     )}
+                  </Td>
+                  <Td>
+                    <IconButton
+                      aria-label={"삭제"}
+                      icon={<i style={{ fontStyle: "normal" }}>🗑</i>}
+                      onClick={() => window.alert("Hello, world")}
+                    />
                   </Td>
                 </Tr>
               )
