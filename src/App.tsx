@@ -53,7 +53,7 @@ const App = (): JSX.Element => {
       </Box>
       <Form key={formKey} onSubmit={addAsset} />
       <Divider margin="8" />
-      <Table key={tableKey} assets={assets} />
+      {isSignIn && <Table key={tableKey} assets={assets} />}
     </>
   );
 };
