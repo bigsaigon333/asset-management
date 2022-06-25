@@ -10,16 +10,20 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { add, formatDate, formatRate } from "./utils";
-import { Asset } from "./type";
+import { PostedAsset } from "./type";
+import { deleteAsset } from "./firebase";
 
 interface TableProps {
-  assets: Asset[];
+  assets: PostedAsset[];
+  onDelete: () => Promise<void>;
 }
 
-const Table = ({ assets }: TableProps): JSX.Element => {
+const Table = ({ assets, onDelete }: TableProps): JSX.Element => {
+  const toast = useToast();
   const [currentAmounts, setCurrentAmounts] = useState<number[]>(
     assets.map(({ purchaseAmount }) => purchaseAmount)
   );
@@ -73,36 +77,47 @@ const Table = ({ assets }: TableProps): JSX.Element => {
                 purchaseDate,
                 currentAmount,
                 setCurrentAmount,
-              }) => (
-                <Tr key={name}>
-                  <Td>{name}</Td>
-                  <Td>{formatDate(purchaseDate)}</Td>
-                  <Td isNumeric>{purchaseAmount}</Td>
-                  <Td isNumeric>
-                    <NumberInput
-                      id="currentAmount"
-                      value={currentAmount}
-                      onChange={(valueString) =>
-                        setCurrentAmount(Number(valueString))
-                      }
-                    >
-                      <NumberInputField />
-                    </NumberInput>
-                  </Td>
-                  <Td isNumeric>
-                    {formatRate(
-                      (currentAmount - purchaseAmount) / purchaseAmount
-                    )}
-                  </Td>
-                  <Td>
-                    <IconButton
-                      aria-label={"삭제"}
-                      icon={<i style={{ fontStyle: "normal" }}>🗑</i>}
-                      onClick={() => window.alert("Hello, world")}
-                    />
-                  </Td>
-                </Tr>
-              )
+                key,
+              }) => {
+                return (
+                  <Tr key={key}>
+                    <Td>{name}</Td>
+                    <Td>{formatDate(purchaseDate)}</Td>
+                    <Td isNumeric>{purchaseAmount}</Td>
+                    <Td isNumeric>
+                      <NumberInput
+                        id="currentAmount"
+                        value={currentAmount}
+                        onChange={(valueString) =>
+                          setCurrentAmount(Number(valueString))
+                        }
+                      >
+                        <NumberInputField />
+                      </NumberInput>
+                    </Td>
+                    <Td isNumeric>
+                      {formatRate(
+                        (currentAmount - purchaseAmount) / purchaseAmount
+                      )}
+                    </Td>
+                    <Td>
+                      <IconButton
+                        aria-label={"삭제"}
+                        icon={<i style={{ fontStyle: "normal" }}>🗑</i>}
+                        onClick={async () => {
+                          await deleteAsset(key);
+                          await onDelete();
+                          toast({
+                            title: `${name}이 삭제되었습니다`,
+                            position: "top",
+                            status: "success",
+                          });
+                        }}
+                      />
+                    </Td>
+                  </Tr>
+                );
+              }
             )}
           {assets.length > 0 && (
             <Tr>

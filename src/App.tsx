@@ -1,10 +1,10 @@
 import { Box, Button, Divider } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Form from "./Form";
 import { useKey } from "./hooks";
 import Table from "./Table";
 import { useAuth } from "./context/auth";
-import { Asset } from "./type";
+import { Asset, PostedAsset } from "./type";
 import { postAsset, readAssets } from "./firebase";
 
 const App = (): JSX.Element => {
@@ -13,22 +13,25 @@ const App = (): JSX.Element => {
   const [formKey, formKeyNext] = useKey();
   const [tableKey, tableKeyNext] = useKey();
 
+  const sync = useCallback(async () => {
+    return readAssets().then((values) => {
+      if (values == null) {
+        return;
+      }
+
+      setAssets(
+        values.sort(
+          (a, b) => a.purchaseDate.getUTCDate() - b.purchaseDate.getUTCDate()
+        )
+      );
+    });
+  }, [setAssets]);
+
   useEffect(() => {
     if (isSignIn) {
-      readAssets().then((values) => {
-        if (values == null) {
-          return;
-        }
-
-        setAssets(
-          values.sort(
-            (a, b) => a.purchaseDate.getUTCDate() - b.purchaseDate.getUTCDate()
-          )
-        );
-        tableKeyNext();
-      });
+      sync().then(tableKeyNext);
     }
-  }, [isSignIn]);
+  }, [isSignIn, sync, tableKeyNext]);
 
   const addAsset = (asset: Asset) => {
     setAssets((prev) => [...prev, asset]);
@@ -53,7 +56,13 @@ const App = (): JSX.Element => {
       </Box>
       <Form key={formKey} onSubmit={addAsset} />
       <Divider margin="8" />
-      {isSignIn && <Table key={tableKey} assets={assets} />}
+      {isSignIn && (
+        <Table
+          key={tableKey}
+          assets={assets as PostedAsset[]}
+          onDelete={sync}
+        />
+      )}
     </>
   );
 };

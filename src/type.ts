@@ -3,3 +3,7 @@ export interface Asset {
   purchaseAmount: number;
   purchaseDate: Date;
 }
+
+export interface PostedAsset extends Asset {
+  key: string;
+}

@@ -5,8 +5,16 @@ import {
   GoogleAuthProvider,
   signOut as firebaseSignOut,
 } from "firebase/auth";
-import { getDatabase, ref, set, push, get, child } from "firebase/database";
-import { Asset } from "./type";
+import {
+  getDatabase,
+  ref,
+  set,
+  push,
+  get,
+  child,
+  remove,
+} from "firebase/database";
+import { Asset, PostedAsset } from "./type";
 import { toDate, toJSON } from "./utils";
 
 const firebaseConfig = {
@@ -61,7 +69,7 @@ export const postAsset = async (asset: Asset): Promise<void> => {
   );
 };
 
-export const readAssets = async (): Promise<Asset[] | null> => {
+export const readAssets = async (): Promise<PostedAsset[] | null> => {
   const dbRef = ref(db);
   try {
     const snapshot = await get(child(dbRef, `assets/${auth.currentUser!.uid}`));
@@ -70,10 +78,19 @@ export const readAssets = async (): Promise<Asset[] | null> => {
       return null;
     }
 
-    return toDate(Object.values(snapshot.val())) as Asset[];
+    return toDate(
+      Object.entries(snapshot.val()).map(([key, value]) => ({
+        ...(value as Record<string, unknown>),
+        key,
+      }))
+    ) as PostedAsset[];
   } catch (error) {
     console.error(error);
 
     return null;
   }
+};
+
+export const deleteAsset = async (key: string): Promise<void> => {
+  return remove(ref(db, `assets/${auth.currentUser!.uid}/${key}`));
 };
