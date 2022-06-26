@@ -1,6 +1,13 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import {
   signIn as firebaseSignIn,
+  signInWithAccessToken,
   signOut as firebaseSignOut,
 } from "../firebase";
 import { useToast } from "@chakra-ui/react";
@@ -11,6 +18,8 @@ interface AuthContext {
   signOut: () => Promise<void>;
 }
 
+const ACCESS_TOKEN_KEY = "firebase-local-storage-access-token";
+
 const authContext = createContext<AuthContext | null>(null);
 authContext.displayName = "authContext";
 
@@ -19,10 +28,25 @@ export const AuthContextProvider = ({ children }: { children?: ReactNode }) => {
 
   const toast = useToast();
 
+  useEffect(() => {
+    const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY);
+    if (accessToken == null) {
+      return;
+    }
+
+    signInWithAccessToken(accessToken)
+      .then(() => setIsSignIn(true))
+      .catch(() => {
+        console.error("access-token is not valid");
+        localStorage.removeItem(ACCESS_TOKEN_KEY);
+      });
+  }, [setIsSignIn]);
+
   const signIn = async () => {
     try {
-      const user = await firebaseSignIn();
+      const { user, token } = await firebaseSignIn();
       setIsSignIn(true);
+      localStorage.setItem(ACCESS_TOKEN_KEY, token);
     } catch (error) {
       console.error(error);
       toast({

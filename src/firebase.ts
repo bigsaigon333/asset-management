@@ -4,6 +4,7 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut as firebaseSignOut,
+  signInWithCredential,
 } from "firebase/auth";
 import {
   getDatabase,
@@ -42,9 +43,9 @@ export const signIn = async () => {
 
     // This gives you a Google Access Token. You can use it to access the Google API.
     const credential = GoogleAuthProvider.credentialFromResult(result)!;
-    const token = credential.accessToken;
+    const token = credential.accessToken!;
 
-    return result.user;
+    return { user: result.user, token };
   } catch (err) {
     const error = err as any;
     // Handle Errors here.
@@ -55,11 +56,35 @@ export const signIn = async () => {
     // The AuthCredential type that was used.
     const credential = GoogleAuthProvider.credentialFromError(error);
     // ...
+
+    throw Error("Login is failed");
   }
 };
 
 export const signOut = async () => {
   await firebaseSignOut(auth);
+};
+
+export const signInWithAccessToken = async (accessToken: string) => {
+  try {
+    const credential = GoogleAuthProvider.credential(undefined, accessToken);
+
+    await signInWithCredential(auth, credential);
+  } catch (err) {
+    // Sign in with credential from the Google user.
+
+    const error = err as any;
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.email;
+    // The credential that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+
+    throw Error("Login is failed");
+  }
 };
 
 export const postAsset = async (asset: Asset): Promise<void> => {
