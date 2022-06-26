@@ -1,4 +1,5 @@
 import {
+  Flex,
   IconButton,
   NumberInput,
   NumberInputField,
@@ -13,7 +14,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { add, formatDate, formatRate } from "./utils";
+import { add, formatDate, formatNumber, formatRate } from "./utils";
 import { PostedAsset } from "./type";
 import { deleteAsset } from "./firebase";
 
@@ -83,13 +84,20 @@ const Table = ({ assets, onDelete }: TableProps): JSX.Element => {
                   <Tr key={key}>
                     <Td>{name}</Td>
                     <Td>{formatDate(purchaseDate)}</Td>
-                    <Td isNumeric>{purchaseAmount}</Td>
+                    <Td isNumeric>
+                      <Flex justifyContent={"space-between"}>
+                        <span> ₩</span>
+                        <span>{formatNumber(purchaseAmount)}</span>
+                      </Flex>
+                    </Td>
                     <Td isNumeric>
                       <NumberInput
                         id="currentAmount"
-                        value={currentAmount}
+                        value={formatNumber(currentAmount)}
                         onChange={(valueString) =>
-                          setCurrentAmount(Number(valueString))
+                          setCurrentAmount(
+                            Number(valueString.replace(/\D/g, ""))
+                          )
                         }
                       >
                         <NumberInputField />
@@ -108,7 +116,7 @@ const Table = ({ assets, onDelete }: TableProps): JSX.Element => {
                           await deleteAsset(key);
                           await onDelete();
                           toast({
-                            title: `${name}이 삭제되었습니다`,
+                            title: ` ${name}이 삭제되었습니다`,
                             position: "top",
                             status: "success",
                           });
@@ -126,10 +134,16 @@ const Table = ({ assets, onDelete }: TableProps): JSX.Element => {
               </Td>
               <Td>-</Td>
               <Td isNumeric>
-                <Text fontWeight="bold">{totalPurchaseAmount}</Text>
+                <Flex justifyContent={"space-between"} fontWeight="bold">
+                  <span> ₩</span>
+                  <span>{formatNumber(totalPurchaseAmount)}</span>
+                </Flex>
               </Td>
               <Td isNumeric>
-                <Text fontWeight="bold">{totalCurrentAmount}</Text>
+                <Flex fontWeight="bold" justifyContent="space-between">
+                  <span> ₩</span>
+                  <span>{formatNumber(totalCurrentAmount)}</span>
+                </Flex>
               </Td>
               <Td isNumeric>
                 <Text fontWeight="bold">

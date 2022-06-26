@@ -10,6 +10,10 @@ export const formatRate = (rate: number): string => {
   return `${(rate * 100).toFixed(2)}%`;
 };
 
+export const formatNumber = (num: number): string => {
+  return new Intl.NumberFormat("en-US").format(num);
+};
+
 export const add = (a: number, b: number): number => a + b;
 
 export const toJSON = (value: unknown): any => {
